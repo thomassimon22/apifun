@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+	<title>Bitcoin Prices API</title>
+	<meta charset="utf-8"/>
+	<script>
+		function getPrice() {
+			/* Step 1: Make instance of request object...
+			...to make HTTP request after page is loaded*/
+			request = new XMLHttpRequest();
+			console.log("1 - request object created");
+
+			// Step 2: Set the URL for the AJAX request to be the JSON file
+
+			request.open("GET", "https://api.coindesk.com/v1/bpi/currentprice.json", true);
+
+			console.log("2 - opened request file");
+
+			// Step 3: set up event handler/callback
+
+			request.onreadystatechange = function() {
+				console.log("3 - readystatechange event fired.");
+
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: wait for done + success
+
+					result = request.responseText;
+					alert(result)
+					prices = JSON.parse(result);
+
+					document.getElementById("data").innerHTML ="Current price of one Bitcoin: $" + prices.bpi.USD.rate;
+
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("data").innerHTML = "Too soon!  Try again";
+
+				}
+
+			}
+		// Step 4: fire off the HTTP request
+			request.send();
+			console.log("4 - Request sent");
+		}
+	</script>
+</head>
+
+
+<body onload="getPrice()">
+
+	<h1>Bitcoin Conversion Prices</h1>
+	<div id="data">Loading...</div>
+	<br>
+  <ul>
+    <li>The API I selected comes from the Bitcoin Price Index API which returns the current price to buy one Bitcoin in each major currency, although I only displayed the USD price.</li>
+    <li>I found this API on: <a href="https://www.coindesk.com/coindesk-api">https://www.coindesk.com/coindesk-api</a></li>
+    <li>I had to comb through the "bpi", "USD", and "rate" options in the JSON file to get the API request to return the price.</li>
+    <li>This API would be helpful if one was running a site to buy/trade Bitcoin or if one wanted to created a graph for Bitcoin prices over time, both of which I have used.</li>
+  </ul>
+</body>
+</html>
